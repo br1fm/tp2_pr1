@@ -17,11 +17,14 @@ public abstract class Road extends SimulatedObject{
 	private int _length;
 	private Weather _weather;
 	private List<Vehicle> _vehicles;
-	
-	Road(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather) {
+
+	//Constructor
+	Road(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather)/*throws excepcion*/{ {
 		 super(id);
+		if(maxSpeed < 0 || contLimit < 0 || length < 0 || srcJunc == null || destJunc == null || weather == null);/*throws excepcion*/
 	}
-	
+
+	//Metodos abstractos de sus subclases
 	abstract void updateSpeedLimit();
 	
 	abstract int calculateVehicleSpeed(Vehicle v);
@@ -30,9 +33,11 @@ public abstract class Road extends SimulatedObject{
 
 	@Override
 	void advance(int time) {
+		// i)
 		reduceTotalContamination();
+		// ii)
 		updateSpeedLimit();
-		
+		// iii)
 		for(Vehicle v : _vehicles) {
 			v.setSpeed(calculateVehicleSpeed(v));
 			v.advance(time);
@@ -46,17 +51,17 @@ public abstract class Road extends SimulatedObject{
 	public JSONObject report() {
 		return null;
 	}
-	
+
+	//Metodo meter vehiculo
 	void enter(Vehicle v) /*throws excepcion*/{
-		if (v.getLocation() == 0) /*lanzar exception*/;
-		if (v.getCurrentSpeed() == 0) /*lanzar exception*/;
+		if (v.getLocation() != 0 || v.getCurrentSpeed() != 0) /*lanzar exception*/;
 		_vehicles.add(v);
 	}
-	
+	//Metodo sacar vehiculo
 	void exit(Vehicle v) {
 		_vehicles.remove(v);
 	}
-
+	//Geters
 	public Junction getSrc() {
 		return _srcJunc;
 	}
@@ -92,12 +97,12 @@ public abstract class Road extends SimulatedObject{
 	public List<Vehicle> getVehicles() {
 		return Collections.unmodifiableList(_vehicles);
 	}
-	
+	//Añadir contaminacion
 	void addContamination(int c) /*throws excepcion*/{
 		if(c < 0) /*lanza excepcion*/;
 		_totalCO2 += c;
 	}
-
+	//Seters
 	void setSrc(Junction _srcJunc) {
 		this._srcJunc = _srcJunc;
 	}
@@ -125,7 +130,7 @@ public abstract class Road extends SimulatedObject{
 	void setLength(int _length) {
 		this._length = _length;
 	}
-
+	
 	void setWeather(Weather w) /*throws excepcion*/{
 		if(w == null) /*lanzar exception*/;
 		_weather = w;
