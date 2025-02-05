@@ -6,7 +6,7 @@ public abstract class SimulatedObject {
 
 	protected String _id;
 
-	SimulatedObject(String id) {
+	SimulatedObject(String id){
 		if ( id == null || id.isBlank() )
 			throw new IllegalArgumentException("the 'id' must be a nonempty string.");
 		else

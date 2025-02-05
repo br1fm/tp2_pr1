@@ -1,11 +1,12 @@
 package simulator.model;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONObject;
 
-public class Road extends SimulatedObject{
+public abstract class Road extends SimulatedObject{
 
 	private Junction _srcJunc;
 	private Junction _destJunc;
@@ -17,20 +18,43 @@ public class Road extends SimulatedObject{
 	private Weather _weather;
 	private List<Vehicle> _vehicles;
 	
-	
 	Road(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather) {
 		 super(id);
 	}
+	
+	abstract void updateSpeedLimit();
+	
+	abstract int calculateVehicleSpeed(Vehicle v);
+	
+	abstract void reduceTotalContamination();
 
 	@Override
 	void advance(int time) {
-		// TODO Auto-generated method stub
+		reduceTotalContamination();
+		updateSpeedLimit();
+		
+		for(Vehicle v : _vehicles) {
+			v.setSpeed(calculateVehicleSpeed(v));
+			v.advance(time);
+		}
+		
+		_vehicles.sort(Comparator.naturalOrder());
 		
 	}
 
 	@Override
 	public JSONObject report() {
 		return null;
+	}
+	
+	void enter(Vehicle v) /*throws excepcion*/{
+		if (v.getLocation() == 0) /*lanzar exception*/;
+		if (v.getCurrentSpeed() == 0) /*lanzar exception*/;
+		_vehicles.add(v);
+	}
+	
+	void exit(Vehicle v) {
+		_vehicles.remove(v);
 	}
 
 	public Junction getSrc() {
@@ -68,6 +92,11 @@ public class Road extends SimulatedObject{
 	public List<Vehicle> getVehicles() {
 		return Collections.unmodifiableList(_vehicles);
 	}
+	
+	void addContamination(int c) /*throws excepcion*/{
+		if(c < 0) /*lanza excepcion*/;
+		_totalCO2 += c;
+	}
 
 	void setSrc(Junction _srcJunc) {
 		this._srcJunc = _srcJunc;
@@ -97,13 +126,13 @@ public class Road extends SimulatedObject{
 		this._length = _length;
 	}
 
-	void setWeather(Weather _weather) {
-		this._weather = _weather;
+	void setWeather(Weather w) /*throws excepcion*/{
+		if(w == null) /*lanzar exception*/;
+		_weather = w;
 	}
 
 	void setVehicles(List<Vehicle> _vehicles) {
 		this._vehicles = _vehicles;
 	}
-	
 	
 }
