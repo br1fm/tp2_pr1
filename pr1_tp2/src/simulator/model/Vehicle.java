@@ -63,39 +63,39 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		return null;
 	}
 	//Getters
-	List<Junction> getItinerary() {
+	public List<Junction> getItinerary() {
 		return _itinerary;
 	}
 
-	int getMaxSpeed() {
+	public int getMaxSpeed() {
 		return _maxSpeed;
 	}
 
-	int getCurrentSpeed() {
+	public int getCurrentSpeed() {
 		return _currentSpeed;
 	}
 
-	VehicleStatus getState() {
+	public VehicleStatus getState() {
 		return _state;
 	}
 
-	Road getRoad() {
+	public Road getRoad() {
 		return _road;
 	}
 
-	int getLocation() {
+	public int getLocation() {
 		return _location;
 	}
 
-	int getContClass() {
+	public int getContClass() {
 		return _contClass;
 	}
 
-	int getTotalCO2() {
+	public int getTotalCO2() {
 		return _totalCO2;
 	}
 
-	int getTotalDistance() {
+	public int getTotalDistance() {
 		return _totalDistance;
 	}
 	
