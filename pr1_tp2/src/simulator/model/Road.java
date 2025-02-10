@@ -19,9 +19,20 @@ public abstract class Road extends SimulatedObject{
 	private List<Vehicle> _vehicles;
 
 	//Constructor
-	Road(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather)/*throws excepcion*/{ {
+	Road(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather){
 		 super(id);
-		if(maxSpeed < 0 || contLimit < 0 || length < 0 || srcJunc == null || destJunc == null || weather == null);/*throws excepcion*/
+		 
+		 if(maxSpeed < 0 || contLimit < 0 || length < 0 
+		    || srcJunc == null || destJunc == null || weather == null) 
+			 throw new IllegalArgumentException("Argumentos incorrectos para el objeto de tipo Road");
+		 
+		 _srcJunc = srcJunc;
+		 _destJunc = destJunc;
+		 _maxSpeed = maxSpeed;
+		 _contLimit = contLimit;
+		 _length = length;
+		 _weather = weather;
+	
 	}
 
 	//Metodos abstractos de sus subclases
@@ -43,7 +54,7 @@ public abstract class Road extends SimulatedObject{
 			v.advance(time);
 		}
 		
-		_vehicles.sort(Comparator.naturalOrder());
+		Collections.sort(_vehicles);
 		
 	}
 
@@ -53,10 +64,11 @@ public abstract class Road extends SimulatedObject{
 	}
 
 	//Metodo meter vehiculo
-	void enter(Vehicle v) /*throws excepcion*/{
-		if (v.getLocation() != 0 || v.getCurrentSpeed() != 0) /*lanzar exception*/;
+	void enter(Vehicle v){
+		if (v.getLocation() != 0 || v.getCurrentSpeed() != 0) throw new IllegalArgumentException("La localización y velocidad del vehículo deben ser 0");
 		_vehicles.add(v);
 	}
+	
 	//Metodo sacar vehiculo
 	void exit(Vehicle v) {
 		_vehicles.remove(v);
@@ -97,9 +109,10 @@ public abstract class Road extends SimulatedObject{
 	public List<Vehicle> getVehicles() {
 		return Collections.unmodifiableList(_vehicles);
 	}
+	
 	//Añadir contaminacion
-	void addContamination(int c) /*throws excepcion*/{
-		if(c < 0) /*lanza excepcion*/;
+	void addContamination(int c){
+		if(c < 0) throw new IllegalArgumentException("La contaminación no puede ser un valor negativo");
 		_totalCO2 += c;
 	}
 	//Seters
@@ -131,8 +144,8 @@ public abstract class Road extends SimulatedObject{
 		this._length = _length;
 	}
 	
-	void setWeather(Weather w) /*throws excepcion*/{
-		if(w == null) /*lanzar exception*/;
+	void setWeather(Weather w){
+		if(w == null)  throw new IllegalArgumentException("Weather no puede ser nulo");
 		_weather = w;
 	}
 

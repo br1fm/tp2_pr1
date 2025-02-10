@@ -9,5 +9,5 @@ public class Junction extends SimulatedObject{
 	private Map<Junction,Road> _outgoing_roads;
 	private List<List<Vehicle>> _queues;
 	//private Map<Road,List<Vehicles> _ 05/02/2025
-		
+	
 }
