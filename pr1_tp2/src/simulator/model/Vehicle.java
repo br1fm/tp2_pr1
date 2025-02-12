@@ -1,5 +1,6 @@
 package simulator.model;
 
+import java.awt.Taskbar.State;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 	private int _contClass;
 	private int _totalCO2;
 	private int _totalDistance;
+	private int _lastSeenJunction;
 
 	//Constructor vehiculo 
 	protected Vehicle(String id, int maxSpeed, int contClass, List<Junction> itinerary){
@@ -24,11 +26,14 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		  super(id);
 		  
 		  //Comprobacion valores, excepcion si no son validos
-		  if(maxSpeed < 0 || itinerary.size() < 2 ||
+		  if(maxSpeed < 1 || itinerary.size() < 2 ||
 		     contClass > 10 || contClass < 0) throw new IllegalArgumentException();
 		  
 		  _maxSpeed = maxSpeed;
 		  _contClass = contClass;
+		  _lastSeenJunction = 0;
+		  _location = 0;
+		  _state = VehicleStatus.PENDING;
 		  
 		  //Copia para evitar modificar
 		  _itinerary = Collections.unmodifiableList(new ArrayList<>(itinerary));
@@ -52,13 +57,18 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 			// c)
 			if(d == _road.getLength()){
 				
+				Junction j = _itinerary.get(_lastSeenJunction);
+				j.enter(this);
 				_currentSpeed = 0;
+				_location = 0;
 				_state = VehicleStatus.WAITING;
 				
 				//TODO: metodo Junction
 				
 				/*It is recommended to keep track of the index of the last junction encountered.
 				 *This starts at 0 and is incremented by 1 when entering a junction's queue.*/
+				
+				//USAR _lastJunction????
 				
 			}
 			 
@@ -67,16 +77,52 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		
 	}
 	
-	void moveToNextRoad() {
+	void moveToNextRoad() /*Lanzar excepción*/ {
 		
-		
+		if(_state != VehicleStatus.PENDING && _state != VehicleStatus.WAITING) /*Lanzar excepción*/;
+		else {
+			
+			if(_road != null || _lastSeenJunction > 0) _road.exit(this);
+				
+			if(_lastSeenJunction == _itinerary.size()) {
+				_state = VehicleStatus.ARRIVED;
+				_road = null;
+			}
+			
+			else {
+				
+				Junction j = _itinerary.get(_lastSeenJunction);
+				
+				if(_state == VehicleStatus.WAITING) {
+					_lastSeenJunction++;
+					_road = j.roadTo(_itinerary.get(_lastSeenJunction));
+					_road.enter(this);
+				}
+				else /*estado = pending llegados a este punto*/ { 
+					//No sé como hacer que entre en su primera carretera
+				}
+				
+				_state = VehicleStatus.TRAVELING;
+				
+			}
+					
+		}
 		
 	}
 	
 	@Override
 	public JSONObject report() {
-		// TODO Auto-generated method stubA
-		return null;
+		JSONObject json = new JSONObject();
+        json.put("id", _id);
+        json.put("speed", _currentSpeed);
+        json.put("distance", _totalDistance);
+        json.put("co2", _totalCO2);
+        json.put("class", _contClass);
+        json.put("status", _state.toString());
+        json.put("road", _road.getId());
+        json.put("location", _location);
+        
+        return json;
 	}
 	//Getters
 	public List<Junction> getItinerary() {
@@ -87,11 +133,11 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		return _maxSpeed;
 	}
 
-	public int getCurrentSpeed() {
+	public int getSpeed() {
 		return _currentSpeed;
 	}
 
-	public VehicleStatus getState() {
+	public VehicleStatus getStatus() {
 		return _state;
 	}
 
@@ -118,11 +164,13 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 	
 	
 	void setSpeed(int s){
+		
 		if(s < 0) throw new IllegalArgumentException("La velocidad no puede ser negativa");
-		_currentSpeed = Integer.min(_currentSpeed, _maxSpeed);
+		if(_state == VehicleStatus.TRAVELING) _currentSpeed = Integer.min(s, _maxSpeed);
+		
 	}
 	
-	void setContaminationClass(int c){
+	void setContClass(int c){
 		if(c < 0 || c > 10) throw new IllegalArgumentException("El grado de contaminación debe ser un valor entre 0 y 10");
 		_contClass = c;
 	}

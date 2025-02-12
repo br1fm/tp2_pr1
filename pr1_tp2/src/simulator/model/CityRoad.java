@@ -23,7 +23,7 @@ public class CityRoad extends Road{
 	
 	@Override
 	void updateSpeedLimit() {
-		// o poner: setSpeedLimit(getMaxSpeed()); 
+		//si da fallo en pruebas poner: setSpeedLimit(getMaxSpeed()); 
 	}
 
 	@Override

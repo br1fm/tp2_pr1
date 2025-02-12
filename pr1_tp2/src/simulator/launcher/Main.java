@@ -10,13 +10,13 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import simulator.factories.Factory;
-import simulator.model.Event;
+//import simulator.model.Event; quitar más adelante el comentario
 
 public class Main {
 
 	private static String _inFile = null;
 	private static String _outFile = null;
-	private static Factory<Event> _eventsFactory = null;
+	//private static Factory<Event> _eventsFactory = null; quitar más adelante el comentario
 
 	private static void parseArgs(String[] args) {
 

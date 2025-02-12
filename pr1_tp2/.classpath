@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/bfmin/git/tp2_pr1/pr1_tp2/lib/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/Users/bfmin/git/tp2_pr1/pr1_tp2/lib/json.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
