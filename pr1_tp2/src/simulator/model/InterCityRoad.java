@@ -24,13 +24,14 @@ public class InterCityRoad extends Road{
 		else setSpeedLimit(getMaxSpeed());
 		
 	}
-	
+	//Hacer el metodo void?
 	public int calculateVehicleSpeed(Vehicle v) {
-		
+
+		//Quitar esta linea?
 		int speed = getSpeedLimit();
-		
+		// despues del if poner v.seSpeed((getSpeed()*8) / 10); ?
 		if(getWeather() == Weather.STORM) speed = (speed*8) / 10;
-		
+		//Quitar el return?
 		return speed;
 	}
 	
