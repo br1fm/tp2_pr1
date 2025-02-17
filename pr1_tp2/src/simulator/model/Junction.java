@@ -24,7 +24,9 @@ public class Junction extends SimulatedObject{
 	
 	Junction(String id, LightSwitchingStrategy lsStrategy, DequeuingStrategy dqStrategy, int xCoor, int yCoor) {
 		  super(id);
-		  
+
+		
+		 if(lsStrategy == null || lsStrategy == null || xCoor < 0 || yCoor < 0) throw new IllegalArgumentException("Argumentos incorrectos para el objeto de tipo Junction");  
 		  _lsStrategy = lsStrategy;
 		  _dqStrategy = dqStrategy;
 		  _xCoor = xCoor;
@@ -34,7 +36,7 @@ public class Junction extends SimulatedObject{
 		  _queues = new ArrayList<List<Vehicle>>();
 		  _queueByRoad = new HashMap<Road, List<Vehicle>>();
 		  _greenLightIndex = -1;
-		  _lastSwitchingTime = 0;
+		  _lastSwitchingTime = 0; // Innecesario se inicializa en 0 automaticamente?
 		  
 		}
 
@@ -45,7 +47,8 @@ public class Junction extends SimulatedObject{
 			
 			List<Vehicle> q =_incomming_roads.get(_greenLightIndex).getVehicles();
 			List<Vehicle> l = _dqStrategy.dequeue(q);
-			
+
+			//Creando este iterador no los eliminas ni de q ni de _queueByRoad que son los colas de donde hay que eliminar no?
 			Iterator<Vehicle> it = l.iterator();
 			
 			//iterador empieza antes del primer elemento de la lista.
@@ -54,11 +57,41 @@ public class Junction extends SimulatedObject{
 				v.moveToNextRoad();
 				it.remove();
 			}
-			
+
+			//Mi solucion paara el primer apartado 
+			//i)
+		//Lista de vehiculos con semaforo en verde en la carretera
+		List<Vehicle> vehiclesToMove = _incomming_roads.get(_greenLightIndex).getVehicles();
+		//Estrategia para extraccion de cola
+		List<Vehicle> avance = _dqStrategy.dequeue(vehiclesToMove);
+			    
+	    
+		
+	    // Mover cada vehículo a su siguiente carretera y eliminarlo de la cola actual
+	    vehiclesToMove.removeAll(avance);
+		
+		for (Vehicle v : avance) {
+	    	// Obtiene la carretera actual del vehículo
+	        Road currentRoad = v.getRoad();  
+	        if (currentRoad != null) {
+	        
+	        	// Obtiene la cola de esta carretera
+	        	List<Vehicle> queue = _queueByRoad.get(currentRoad); 
+	        
+	        	if (queue != null) {
+	        		// Elimina el vehículo de la cola
+	        		queue.remove(v); 
+	        	}
+	        }
+	        // Llama al método que mueve el vehículo a su siguiente carretera
+	        v.moveToNextRoad(); 
+	    }
 		}
-		
+
+		//ii)
+		//Calcular indice de la siguiente carretera en verde
 		int new_greenLight = _lsStrategy.chooseNextGreen(_incomming_roads, _queues, _greenLightIndex, _lastSwitchingTime, time);
-		
+
 		if(new_greenLight != _greenLightIndex) {
 			_greenLightIndex = new_greenLight;
 			_lastSwitchingTime = time;
@@ -66,43 +99,41 @@ public class Junction extends SimulatedObject{
 		
 	}
 	
-	void addIncommingRoad(Road r) /*lanzar excepción*/ {
+	void addIncommingRoad(Road r) {
 		
-		if(r.getDest() == this) {
-			
-			_incomming_roads.add(r);
-			List<Vehicle> q_r = new ArrayList<>();
-			_queues.add(q_r);
-			_queueByRoad.put(r, q_r);
-			
-		}
+		if(r.getDest() != this) throw new IllegalArgumentException("Esta carretera no es entrante"); 
 		
-		else /*lanzar excepción*/;
+		_incomming_roads.add(r);
+		
+		//Se crea la Lista de colas
+		List<Vehicle> vehicleQueue = new LinkedList<>();
+		_queues.add(vehicleQueue);
+		_queueByRoad.put(r,vehicleQueue);
 		
 	}
 	
-	void addOutGoingRoad(Road r)/*lanzar excepción*/ {
+	void addOutGoingRoad(Road r) {
 		
 		if(r.getSrc() == this) {
-		
-			Junction j = r.getDest();
 			
-			if(!_outgoing_roads.containsKey(j)) { //la carretera que hay que tomar para llegar a j2
-				_outgoing_roads.put(j, r);
+			if(_outgoing_roads.containsKey(r.getDest())) {
+				_outgoing_roads.put(r.getDest(), r);
+			}else {
+				throw new IllegalArgumentException("Esta carretera no es saliente"); 
 			}
-			else /*lanzar excepción*/;
+		}else {
+			throw new IllegalArgumentException("Esta carretera no llega al cruce"); 
 		}
-		else /*lanzar excepción*/;
 		
 	}
 	
 	void enter(Vehicle v) {
 		
 		Road r = v.getRoad();
-		List<Vehicle> q_r = _queueByRoad.get(r);
-		q_r.add(v);
+		List<Vehicle> vehicleQueue = _queueByRoad.get(r);
+		vehicleQueue.add(v);
 		
-		_queueByRoad.put(r, q_r);
+		_queueByRoad.put(r,vehicleQueue);
 		
 	}
 	
