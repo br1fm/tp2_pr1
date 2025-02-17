@@ -26,7 +26,6 @@ public class InterCityRoad extends Road{
 	}
 	
 	public int calculateVehicleSpeed(Vehicle v) {
-
 		
 		int speed = getSpeedLimit();
 		
