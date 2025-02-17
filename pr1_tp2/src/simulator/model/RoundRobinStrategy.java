@@ -5,7 +5,7 @@ import java.util.List;
 public class RoundRobinStrategy implements LightSwitchingStrategy{
 
 	private int _timeSlot;
-	
+	//Constructor
 	public RoundRobinStrategy(int timeSlot) {
 		_timeSlot = timeSlot;
 	}
@@ -13,20 +13,20 @@ public class RoundRobinStrategy implements LightSwitchingStrategy{
 	@Override
 	public int chooseNextGreen(List<Road> roads, List<List<Vehicle>> qs, int currGreen, int lastSwitchingTime,
 			int currTime) {
+
+		// 1.-si la lista de carreteras entrantes es vacı́a, entonces devuelve -1.
+		if(roads.isEmpty()) return -1;
 		
-		//en otro caso devuelve currGreen+1 módulo la longitud de la lista roads
-		int res = (currGreen + 1) % roads.size();
+		//2.-currGreen es -1 devuelve 0
+		if(currGreen == -1) return 0;
 		
-		//si la lista de carreteras entrantes es vacı́a, entonces devuelve -1.
-		if(roads.isEmpty()) res = -1;
-		
-		//currGreen es -1 devuelve 0
-		else if(currGreen == -1) res = 0;
-		
-		//si si currTime-lastSwitchingTime < timeSlot devuelve currGreen
-		else if(currTime-lastSwitchingTime < _timeSlot) res = currGreen;
+		//3.-si currTime-lastSwitchingTime < timeSlot devuelve currGreen
+		if((currTime - lastSwitchingTime) < _timeSlot) return currGreen;
 	
-		return res;
+		//4.-en otro caso devuelve currGreen+1 módulo la longitud de la lista roads
+		return (currGreen + 1 )% roads.size();
+
+		
 	}
 
 }
