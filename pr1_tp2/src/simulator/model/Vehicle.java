@@ -263,7 +263,8 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		
 		if(s < 0) throw new IllegalArgumentException("La velocidad no puede ser negativa");
 		if(_state == VehicleStatus.TRAVELING) _currentSpeed = Integer.min(s, _maxSpeed);
-		
+		//si no es traveling velocidad 0
+		_currentSpeed = 0;	
 	}
 	
 	// Contaminacion al valor c
