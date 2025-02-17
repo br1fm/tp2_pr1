@@ -85,7 +85,7 @@ public abstract class Road extends SimulatedObject{
 
 	//Metodo meter vehiculo
 	void enter(Vehicle v){
-		if (v.getLocation() != 0 || v.getSpeed() != 0) {
+		if (v.getLocation() != 0 || v.getSpeed() != 0/* && _vehicles,contains(v) // Si existe el vehiculo en la lista no se puede meter*/) {
 			throw new IllegalArgumentException("La localización y velocidad del vehículo deben ser 0");
 		}
 		_vehicles.add(v);
@@ -93,7 +93,7 @@ public abstract class Road extends SimulatedObject{
 	
 	//Metodo sacar vehiculo
 	void exit(Vehicle v) {
-		_vehicles.remove(v);
+		/* if(_vehicles.contains(v) Si el vehiculo esta en la lista lo quita, si no, no hace nada */_vehicles.remove(v);
 	}
 	//Geters
 	public Junction getSrc() {
