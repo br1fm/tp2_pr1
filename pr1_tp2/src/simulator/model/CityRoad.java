@@ -1,5 +1,6 @@
 package simulator.model;
 
+//Constructor
 public class CityRoad extends Road{
 
 	CityRoad(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather) {
@@ -22,7 +23,7 @@ public class CityRoad extends Road{
 	
 	@Override
 	void updateSpeedLimit() {
-		//setSpeedLimit(getMaxSpeed()); 
+		setSpeedLimit(getMaxSpeed()); 
 	}
 
 	@Override
