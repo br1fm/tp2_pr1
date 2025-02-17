@@ -87,7 +87,7 @@ public class Junction extends SimulatedObject{
 		
 			Junction j = r.getDest();
 			
-			if(!_outgoing_roads.containsKey(j)) {
+			if(!_outgoing_roads.containsKey(j)) { //la carretera que hay que tomar para llegar a j2
 				_outgoing_roads.put(j, r);
 			}
 			else /*lanzar excepción*/;
@@ -99,9 +99,7 @@ public class Junction extends SimulatedObject{
 	void enter(Vehicle v) {
 		
 		Road r = v.getRoad();
-		List<Vehicle> q_r = new ArrayList<>();
-		
-		q_r = _queueByRoad.get(r);
+		List<Vehicle> q_r = _queueByRoad.get(r);
 		q_r.add(v);
 		
 		_queueByRoad.put(r, q_r);

@@ -4,7 +4,6 @@ public class CityRoad extends Road{
 
 	CityRoad(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather) {
 		super(id, srcJunc, destJunc, maxSpeed, contLimit, length, weather);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -23,7 +22,7 @@ public class CityRoad extends Road{
 	
 	@Override
 	void updateSpeedLimit() {
-		//si da fallo en pruebas poner: setSpeedLimit(getMaxSpeed()); 
+		//setSpeedLimit(getMaxSpeed()); 
 	}
 
 	@Override

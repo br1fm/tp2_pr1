@@ -1,5 +1,6 @@
 package simulator.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,16 +24,21 @@ public abstract class Road extends SimulatedObject{
 	Road(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather){
 		 super(id);
 		 
-		 if(maxSpeed < 1 || contLimit < 0 || length < 0 
-		    || srcJunc == null || destJunc == null || weather == null) 
+		 //depende del test, se intercambian length y contLimit.
+		 
+		 if(maxSpeed < 1 || contLimit < 1 || length < 0 || srcJunc == null || destJunc == null || weather == null) 
 			 throw new IllegalArgumentException("Argumentos incorrectos para el objeto de tipo Road");
 		 
 		 _srcJunc = srcJunc;
 		 _destJunc = destJunc;
+		 _srcJunc.addOutGoingRoad(this); 
+		 _destJunc.addIncommingRoad(this);
 		 _maxSpeed = maxSpeed;
+		 _speedLimit = maxSpeed;
 		 _contLimit = contLimit;
 		 _length = length;
 		 _weather = weather;
+		 _vehicles = new ArrayList<>();
 	
 	}
 
@@ -63,7 +69,6 @@ public abstract class Road extends SimulatedObject{
 	public JSONObject report() {
 		
 		 	JSONObject json = new JSONObject();
-	        json.put("id", _id);
 	        json.put("speedlimit", _speedLimit);
 	        json.put("weather", _weather.toString());
 	        json.put("co2", _totalCO2);
@@ -73,13 +78,16 @@ public abstract class Road extends SimulatedObject{
 	            vehiclesArray.put(v.getId());
 	        }
 	        json.put("vehicles", vehiclesArray);
+	        json.put("id", _id);
 	        
 	        return json;
 	}
 
 	//Metodo meter vehiculo
 	void enter(Vehicle v){
-		if (v.getLocation() != 0 || v.getSpeed() != 0) throw new IllegalArgumentException("La localización y velocidad del vehículo deben ser 0");
+		if (v.getLocation() != 0 || v.getSpeed() != 0) {
+			throw new IllegalArgumentException("La localización y velocidad del vehículo deben ser 0");
+		}
 		_vehicles.add(v);
 	}
 	

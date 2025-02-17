@@ -34,6 +34,7 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		  _lastSeenJunction = 0;
 		  _location = 0;
 		  _state = VehicleStatus.PENDING;
+		  _road = null;
 		  
 		  //Copia para evitar modificar
 		  _itinerary = Collections.unmodifiableList(new ArrayList<>(itinerary));
@@ -47,12 +48,13 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		if(_state == VehicleStatus.TRAVELING) {
 
 			int old_location = _location;
-			// a) 
+			// a)
 			_location = Integer.min(_road.getLength(), _location + _currentSpeed);
 			// b)
 			int d = _location - old_location;
 			int c = d * _contClass;
 			_totalCO2 += c;
+			_totalDistance += d;
 			_road.addContamination(c);
 			// c)
 			if(d == _road.getLength()){
@@ -92,16 +94,19 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 			else {
 				
 				Junction j = _itinerary.get(_lastSeenJunction);
+				_lastSeenJunction++;
 				
 				if(_state == VehicleStatus.WAITING) {
-					_lastSeenJunction++;
+					
 					_road = j.roadTo(_itinerary.get(_lastSeenJunction));
-					_road.enter(this);
 				}
 				else /*estado = pending llegados a este punto*/ { 
 					//No sé como hacer que entre en su primera carretera
+					//int next_junc = _lastSeenJunction + 1;
+					_road = j.roadTo(_itinerary.get(_lastSeenJunction));
 				}
 				
+				_road.enter(this);
 				_state = VehicleStatus.TRAVELING;
 				
 			}
@@ -112,6 +117,7 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 	
 	@Override
 	public JSONObject report() {
+		
 		JSONObject json = new JSONObject();
         json.put("id", _id);
         json.put("speed", _currentSpeed);
@@ -119,11 +125,26 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
         json.put("co2", _totalCO2);
         json.put("class", _contClass);
         json.put("status", _state.toString());
-        json.put("road", _road.getId());
-        json.put("location", _location);
+        if(!(_state == VehicleStatus.PENDING || _state == VehicleStatus.ARRIVED)) {
+        	json.put("road", _road.getId());
+        	json.put("location", _location);
+        }
         
         return json;
 	}
+	
+	@Override
+	public String toString() {
+		return "id: " + _id +
+		           ", speed: " + _currentSpeed +
+		           ", distance: " + _totalDistance +
+		           ", co2: " + _totalCO2 +
+		           ", class: " + _contClass +
+		           ", status: " + _state +
+		           ", road: " + _road.getId() +
+		           ", location: " + _location;
+	}
+	
 	//Getters
 	public List<Junction> getItinerary() {
 		return _itinerary;
