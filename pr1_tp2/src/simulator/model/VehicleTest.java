@@ -139,9 +139,12 @@ class VehicleTest {
 
 		// move the vehicle in road 'r1'
 		r1.advance(0);
+		
+		System.out.println(v1.toString());
 
 		// the last advance should move vehicle 'v1' for 50 units
 		assertEquals(50, v1.getLocation());
+		
 		
 		// check the vehicle's contamination
 		assertEquals(50,v1.getTotalCO2());

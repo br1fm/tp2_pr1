@@ -21,7 +21,7 @@ public abstract class Road extends SimulatedObject{
 	private List<Vehicle> _vehicles;
 
 	//Constructor
-	Road(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length, Weather weather){
+	Road(String id, Junction srcJunc, Junction destJunc, int length, int maxSpeed, int contLimit, Weather weather){
 		 super(id);
 		 
 		 //depende del test, se intercambian length y contLimit.
@@ -93,7 +93,7 @@ public abstract class Road extends SimulatedObject{
 	
 	//Metodo sacar vehiculo
 	void exit(Vehicle v) {
-		/* if(_vehicles.contains(v) Si el vehiculo esta en la lista lo quita, si no, no hace nada */_vehicles.remove(v);
+		 if(_vehicles.contains(v)) _vehicles.remove(v);
 	}
 	//Geters
 	public Junction getSrc() {

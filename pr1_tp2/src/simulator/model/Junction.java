@@ -3,6 +3,7 @@ package simulator.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class Junction extends SimulatedObject{
 			
 			List<Vehicle> q =_incomming_roads.get(_greenLightIndex).getVehicles();
 			List<Vehicle> l = _dqStrategy.dequeue(q);
+			q.removeAll(l);
 
 			//Creando este iterador no los eliminas ni de q ni de _queueByRoad que son los colas de donde hay que eliminar no?
 			Iterator<Vehicle> it = l.iterator();
@@ -57,35 +59,6 @@ public class Junction extends SimulatedObject{
 				v.moveToNextRoad();
 				it.remove();
 			}
-
-			//Mi solucion paara el primer apartado 
-			//i)
-		//Lista de vehiculos con semaforo en verde en la carretera
-		List<Vehicle> vehiclesToMove = _incomming_roads.get(_greenLightIndex).getVehicles();
-		//Estrategia para extraccion de cola
-		List<Vehicle> avance = _dqStrategy.dequeue(vehiclesToMove);
-			    
-	    
-		
-	    // Mover cada vehículo a su siguiente carretera y eliminarlo de la cola actual
-	    vehiclesToMove.removeAll(avance);
-		
-		for (Vehicle v : avance) {
-	    	// Obtiene la carretera actual del vehículo
-	        Road currentRoad = v.getRoad();  
-	        if (currentRoad != null) {
-	        
-	        	// Obtiene la cola de esta carretera
-	        	List<Vehicle> queue = _queueByRoad.get(currentRoad); 
-	        
-	        	if (queue != null) {
-	        		// Elimina el vehículo de la cola
-	        		queue.remove(v); 
-	        	}
-	        }
-	        // Llama al método que mueve el vehículo a su siguiente carretera
-	        v.moveToNextRoad(); 
-	    }
 		}
 
 		//ii)
@@ -101,14 +74,16 @@ public class Junction extends SimulatedObject{
 	
 	void addIncommingRoad(Road r) {
 		
-		if(r.getDest() != this) throw new IllegalArgumentException("Esta carretera no es entrante"); 
+		if(r.getDest() == this) {
+			
+			_incomming_roads.add(r);
+			List<Vehicle> q_r = new ArrayList<>();
+			_queues.add(q_r);
+			_queueByRoad.put(r, q_r);
+			
+		}
 		
-		_incomming_roads.add(r);
-		
-		//Se crea la Lista de colas
-		List<Vehicle> vehicleQueue = new LinkedList<>();
-		_queues.add(vehicleQueue);
-		_queueByRoad.put(r,vehicleQueue);
+		else throw new IllegalArgumentException();
 		
 	}
 	
@@ -116,14 +91,14 @@ public class Junction extends SimulatedObject{
 		
 		if(r.getSrc() == this) {
 			
-			if(_outgoing_roads.containsKey(r.getDest())) {
-				_outgoing_roads.put(r.getDest(), r);
-			}else {
-				throw new IllegalArgumentException("Esta carretera no es saliente"); 
+			Junction j = r.getDest();
+			
+			if(!_outgoing_roads.containsKey(j)) { //la carretera que hay que tomar para llegar a j2
+				_outgoing_roads.put(j, r);
 			}
-		}else {
-			throw new IllegalArgumentException("Esta carretera no llega al cruce"); 
+			else /*lanzar excepción*/;
 		}
+		else /*lanzar excepción*/;
 		
 	}
 	

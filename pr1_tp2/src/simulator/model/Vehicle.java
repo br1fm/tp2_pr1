@@ -65,7 +65,6 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 				_currentSpeed = 0;
 				_location = 0;
 				_state = VehicleStatus.WAITING;
-				
 				//TODO: metodo Junction
 				
 				/*It is recommended to keep track of the index of the last junction encountered.
@@ -74,20 +73,11 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 				//USAR _lastJunction????
 				
 			}
-
-			// Mi solucion para el apratado c)
-			if(_location >= _road.getLength()){
-				Junction j_dest = _road.getDest();
-				j_dest.enter(this);
-				_currentSpeed = 0;
-				_location = 0;
-				_road = null; // Sale de la carretera
-				_state = VehicleStatus.WAITING;
-			}
 			
 		}
 		
 	}
+	
 	
 	void moveToNextRoad() /*Lanzar excepción*/ {
 		
@@ -111,8 +101,6 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 					_road = j.roadTo(_itinerary.get(_lastSeenJunction));
 				}
 				else /*estado = pending llegados a este punto*/ { 
-					//No sé como hacer que entre en su primera carretera
-					//int next_junc = _lastSeenJunction + 1;
 					_road = j.roadTo(_itinerary.get(_lastSeenJunction));
 				}
 				
@@ -124,65 +112,7 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		}
 		
 	}
-
-	//Mi Solucion MoveToNextRoad:
-	void moveToNextRoad() {
-		
-		if(_state != VehicleStatus.PENDING || _state != VehicleStatus.WAITING) throw new IllegalArgumentException("El estado solo puede ser PENDING o WAITING");
-		else {
-			if(_state == VehicleStatus.PENDING) {
-		
-		
-			// Bucar primer y segundo cruce
-			Junction firstJunction = _itinerary.get(0);
-			Junction nextJunciton = _itinerary.get(1);
-			
-			// Buscar carretera que conecta ambos cruces
-			Road firstRoad = firstJunction.roadTo(nextJunciton);
-			
-			//Comprobar que existe carretera
-			if(firstRoad != null) {
-				
-				//Meter el vehiculo en la carretera
-				firstRoad.enter(this);
-			    _road = firstRoad;
-				_state = VehicleStatus.WAITING;
-			}
-		}else if (_state == VehicleStatus.WAITING) {
-			
-			//Salir de la carretera actual
-			_road.exit(this);
-			
-			//Obtener el cruce actual
-			Junction actualJunction = _road.getDest();
-			
-			// Buscar el indice del cruce en el itinerario
-			int index = _itinerary.indexOf(actualJunction);
-			
-			// Comprobar que el cruce no es el ultimo 
-			if(index != -1 && index + 1 < _itinerary.size()) {
-			
-				// Buscar el siguiente cruce en el itinerario
-				Junction nextJunction = _itinerary.get( index + 1);
-				
-				// Obtener la carretera entre el cruce actual y el siguiente
-				Road nextRoad = actualJunction.roadTo(nextJunction);
-				
-				// Comprobar que existe carretera
-				if(nextRoad != null) {
-					
-					// Meter el vehiculo en la carretera
-					nextRoad.enter(this);
-					_road = nextRoad; 
-				}
-			
-			// El cruce era el ultimo por lo tanto finaliza itinerario	
-			}else {
-				_state = VehicleStatus.ARRIVED;
-				}
-			}
-		}
-	}
+	
 
 
 
@@ -207,7 +137,6 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
         return json;
 	}
 
-	//Para que sirve esto?
 	@Override
 	public String toString() {
 		return "id: " + _id +
@@ -263,8 +192,7 @@ public class Vehicle extends SimulatedObject implements Comparable<Vehicle>{
 		
 		if(s < 0) throw new IllegalArgumentException("La velocidad no puede ser negativa");
 		if(_state == VehicleStatus.TRAVELING) _currentSpeed = Integer.min(s, _maxSpeed);
-		//si no es traveling velocidad 0
-		_currentSpeed = 0;	
+		else _currentSpeed = 0;	
 	}
 	
 	// Contaminacion al valor c
