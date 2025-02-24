@@ -10,13 +10,13 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import simulator.factories.Factory;
-//import simulator.model.Event; quitar más adelante el comentario
+import simulator.model.Event;
 
 public class Main {
 
 	private static String _inFile = null;
 	private static String _outFile = null;
-	//private static Factory<Event> _eventsFactory = null; quitar más adelante el comentario
+	private static Factory<Event> _eventsFactory = null;
 
 	private static void parseArgs(String[] args) {
 
@@ -80,7 +80,6 @@ public class Main {
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
 	}
-
 
 	private static void initFactories() {
 	}

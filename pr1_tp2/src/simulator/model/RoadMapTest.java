@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 class RoadMapTest {
-
+ 
 	@Test
 	void test_1() {
 		RoadMap map = new RoadMap();
@@ -62,7 +62,7 @@ class RoadMapTest {
 		assertEquals(r1,lr.get(0));
 		assertEquals(r2,lr.get(1));
 
-		List<Vehicle> lv = map.getVehilces();
+		List<Vehicle> lv = map.getVehicles();
 		assertEquals(v1, lv.get(0));
 		assertEquals(v2, lv.get(1));
 		assertEquals(v3, lv.get(2));

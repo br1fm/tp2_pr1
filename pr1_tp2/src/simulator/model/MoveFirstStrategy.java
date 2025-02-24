@@ -9,7 +9,7 @@ public class MoveFirstStrategy implements DequeuingStrategy{
 	public List<Vehicle> dequeue(List<Vehicle> q) {
 		
 		List<Vehicle> list = new ArrayList<Vehicle>();
-		list.add(q.getFirst());
+		if(!q.isEmpty()) list.add(q.getFirst());
 		return list;
 		
 	}

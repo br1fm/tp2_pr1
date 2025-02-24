@@ -1,4 +1,4 @@
-package tests.simulator.misc;
+package simulator.misc;
 
 import java.util.ArrayList;
 import java.util.List;

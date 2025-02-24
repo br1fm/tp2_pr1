@@ -2,11 +2,10 @@ package simulator.model;
 
 public class InterCityRoad extends Road{
 
-	//Constructor
 	InterCityRoad(String id, Junction srcJunc, Junction destJunc, int maxSpeed, int contLimit, int length,
 			Weather weather) {
 		super(id, srcJunc, destJunc, maxSpeed, contLimit, length, weather);
-		
+
 	}
 	
 	public void reduceTotalContamination(){
@@ -30,7 +29,7 @@ public class InterCityRoad extends Road{
 		
 		int speed = getSpeedLimit();
 		
-		if(getWeather() == Weather.STORM) speed = (speed*8) / 10;
+		if(getWeather() == Weather.STORM) speed = ((speed*8) / 10);
 		
 		return speed;
 	}

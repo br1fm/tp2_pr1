@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import tests.simulator.misc.Utils;
+import simulator.misc.Utils;
 
-public class MoveAllStrategyTest {
+public class MoveFirstStrategyTest {
 
 	@Test
 	void test_1() {
@@ -25,9 +25,10 @@ public class MoveAllStrategyTest {
 		
 		List<Vehicle> q = Utils.arrayToList(vs);
 		
-		MoveAllStrategy st = new MoveAllStrategy();
+		MoveFirstStrategy st = new MoveFirstStrategy();
 		List<Vehicle> nq = st.dequeue(q);
 
-		assertTrue( q.equals(nq) );
+		assertTrue( nq.size() == 1);
+		assertTrue( nq.get(0).equals(q.get(0)));
 	}
 }
